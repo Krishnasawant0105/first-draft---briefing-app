@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account Briefing – Ayala Corporation</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #0e0e0e; --paper: #f4f1eb; --gold: #c8963e; --red: #b52b2b;
+    --muted: #6b6255; --rule: #d5cfc4; --col1: #1a3a5c;
+  }
+  body { background: var(--paper); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; line-height: 1.5; padding: 28px; max-width: 960px; margin: 0 auto; }
+
+  .header { display: grid; grid-template-columns: 1fr auto; align-items: start; border-top: 3px solid var(--ink); border-bottom: 1px solid var(--rule); padding: 14px 0 12px; margin-bottom: 14px; }
+  .badge { font-family: 'IBM Plex Mono', monospace; font-size: 8.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .company-name { font-family: 'Playfair Display', serif; font-size: 34px; font-weight: 900; line-height: 1; letter-spacing: -.5px; }
+  .company-sub { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: .08em; margin-top: 4px; }
+  .header-right { text-align: right; }
+  .meta-block { font-family: 'IBM Plex Mono', monospace; font-size: 8.5px; color: var(--muted); line-height: 1.8; }
+  .meta-block strong { color: var(--ink); font-weight: 500; }
+  .confidence-tag { display: inline-block; background: var(--gold); color: white; font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; letter-spacing: .1em; padding: 2px 8px; border-radius: 2px; text-transform: uppercase; margin-top: 6px; }
+
+  .alert-box { background: #fff8ee; border: 1px solid #e0c07a; border-left: 3px solid var(--gold); padding: 8px 12px; margin-bottom: 12px; border-radius: 0 2px 2px 0; }
+  .alert-label { font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; color: var(--gold); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 2px; }
+  .alert-box p { font-size: 10px; color: #555; line-height: 1.45; }
+
+  .main-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  .panel { border: 1px solid var(--rule); padding: 12px 14px; background: white; }
+  .panel-label { font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; letter-spacing: .15em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
+  .panel-label span { display: inline-block; width: 16px; height: 1px; background: var(--gold); vertical-align: middle; margin-right: 6px; position: relative; top: -1px; }
+
+  .snapshot { grid-column: 1 / 3; }
+  .snapshot-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .stat-box { text-align: center; padding: 8px 6px; background: var(--paper); border-radius: 2px; }
+  .stat-val { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; color: var(--col1); line-height: 1; }
+  .stat-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 7px; color: var(--muted); margin-top: 3px; letter-spacing: .04em; }
+  .snapshot-desc { font-size: 10.5px; color: #333; line-height: 1.55; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+  .tag { font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; border: 1px solid var(--rule); padding: 2px 7px; color: var(--muted); border-radius: 2px; }
+  .tag.hot { border-color: var(--gold); color: var(--gold); }
+
+  .leadership { grid-column: 3 / 4; grid-row: 1 / 3; }
+  .person { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); }
+  .person:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .person-name { font-size: 11px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+  .person-title { font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: var(--gold); margin-top: 1px; }
+  .person-note { font-size: 9.5px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+  .erp-flag { display: inline-block; background: var(--col1); color: white; font-family: 'IBM Plex Mono', monospace; font-size: 6.5px; padding: 1px 5px; border-radius: 2px; margin-top: 3px; letter-spacing: .06em; }
+  .erp-flag.new { background: #7a3010; }
+
+  .news { grid-column: 1 / 2; }
+  .news-item { margin-bottom: 9px; padding-bottom: 9px; border-bottom: 1px solid var(--rule); }
+  .news-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .news-date { font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; color: var(--muted); }
+  .news-headline { font-size: 10.5px; font-weight: 600; color: var(--ink); margin-top: 2px; line-height: 1.35; }
+  .news-body { font-size: 9.5px; color: #444; margin-top: 2px; line-height: 1.45; }
+
+  .signals { grid-column: 2 / 3; }
+  .signal-item { display: flex; gap: 8px; margin-bottom: 9px; align-items: flex-start; }
+  .signal-icon { flex-shrink: 0; width: 20px; height: 20px; background: var(--paper); border: 1px solid var(--rule); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--gold); font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
+  .signal-text strong { display: block; font-size: 10px; font-weight: 600; color: var(--ink); margin-bottom: 1px; }
+  .signal-text span { font-size: 9px; color: var(--muted); line-height: 1.4; }
+
+  .talkto { grid-column: 1 / 3; }
+  .contacts-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .contact-card { background: var(--paper); padding: 10px; border-radius: 2px; }
+  .contact-role-badge { font-family: 'IBM Plex Mono', monospace; font-size: 7px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 4px; }
+  .contact-name { font-size: 11px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+  .contact-title { font-size: 8.5px; color: var(--col1); margin-top: 1px; font-family: 'IBM Plex Mono', monospace; }
+  .contact-why { font-size: 9px; color: var(--muted); margin-top: 5px; line-height: 1.4; border-top: 1px solid var(--rule); padding-top: 5px; }
+  .contact-why strong { color: var(--ink); }
+  .linkedin-link { display: inline-block; margin-top: 5px; font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; color: var(--col1); text-decoration: none; border-bottom: 1px solid var(--col1); opacity: .7; }
+  .linkedin-link:hover { opacity: 1; }
+
+  .footer { margin-top: 12px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--rule); padding-top: 8px; }
+  .footer-left { font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; color: var(--muted); line-height: 1.7; }
+  .footer-right { font-family: 'Playfair Display', serif; font-size: 11px; font-style: italic; color: var(--gold); }
+  .verified-dot { display: inline-block; width: 6px; height: 6px; background: #2d8a4e; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="badge">Account Intelligence Briefing · ERP Sales Team · Live-verified Apr 28, 2026</div>
+    <div class="company-name">Ayala Corporation</div>
+    <div class="company-sub">PSE: AC · Makati City, Philippines · est. 1834 · Philippines' oldest conglomerate</div>
+  </div>
+  <div class="header-right">
+    <div class="meta-block">
+      <strong>Prepared:</strong> April 28, 2026<br>
+      <strong>Sector:</strong> Diversified Conglomerate<br>
+      <strong>Region:</strong> Southeast Asia — Philippines<br>
+      <strong>Priority:</strong> Tier 1 Account
+    </div>
+    <div class="confidence-tag"><span class="verified-dot"></span>Web-Verified · Apr 2026</div>
+  </div>
+</div>
+
+<div class="alert-box">
+  <div class="alert-label">⚡ Pre-Meeting Alert — Updated from Ayala ASM, April 24, 2026</div>
+  <p><strong>Most recent signal (2 days ago):</strong> At its Apr 24 Annual Stockholders Meeting, CEO Consing confirmed 2025 full-year core net income hit a record ₱48.3B (+7% YoY). 2026 CAPEX is being recalibrated downward from ₱230B to ~₱180B due to Middle East headwinds — the group is now explicitly prioritising "resiliency over growth." This signals a shift toward efficiency and cost control, not expansion — a strong ERP conversation anchor. CFO transition is live: Juan Carlos Syquia is now active as CFO (effective Jan 2026). Finance controller also changed hands in March 2026. Multiple layers of financial leadership transition in a single quarter = high window of opportunity.</p>
+</div>
+
+<div class="main-grid">
+
+  <!-- SNAPSHOT -->
+  <div class="panel snapshot">
+    <div class="panel-label"><span></span>Company Snapshot</div>
+    <div class="snapshot-grid">
+      <div class="stat-box">
+        <div class="stat-val">₱48.3B</div>
+        <div class="stat-lbl">2025 Core Net Income (record)</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">~$5.7B</div>
+        <div class="stat-lbl">Revenue (USD, FY2024)</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">64K+</div>
+        <div class="stat-lbl">Employees (Group)</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">12+</div>
+        <div class="stat-lbl">Business Units</div>
+      </div>
+    </div>
+    <p class="snapshot-desc">
+      The Philippines' oldest and largest conglomerate (founded 1834), Ayala operates across real estate (Ayala Land), banking (BPI), telecoms (Globe Telecom), energy (ACEN), healthcare (AC Health), logistics (AC Logistics), automotive (ACMobility), and electronics manufacturing (IMI). FY2025 core net income hit a record ₱48.3B, driven by BPI and Ayala Land, with AC Health and IMI swinging to profitability. Mitsubishi Corp. acquired a 50% stake in AC Ventures (holding Ayala's GCash stake) for ~₱19B in H2 2025, signalling confidence in Ayala's fintech portfolio. In 2026, the group is pivoting from aggressive expansion to cash flow discipline and balance sheet protection amid global macro headwinds.
+    </p>
+    <div class="tag-row">
+      <span class="tag hot">Real Estate</span>
+      <span class="tag hot">Banking</span>
+      <span class="tag hot">Telecoms</span>
+      <span class="tag">Energy</span>
+      <span class="tag">Healthcare</span>
+      <span class="tag">Logistics</span>
+      <span class="tag">Electronics Mfg.</span>
+      <span class="tag">Automotive / EV</span>
+      <span class="tag">Fintech (GCash)</span>
+    </div>
+  </div>
+
+  <!-- LEADERSHIP -->
+  <div class="panel leadership">
+    <div class="panel-label"><span></span>Leadership Team</div>
+
+    <div class="person">
+      <div class="person-name">Cezar P. "Bong" Consing</div>
+      <div class="person-title">President & CEO</div>
+      <div class="person-note">Former BPI CEO. Publicly stated 2026 priority: "resiliency over growth" — cash flow, earnings, balance sheet. Emphasis on operational efficiency across all units creates a natural ERP conversation.</div>
+      <div class="erp-flag">EXECUTIVE SPONSOR</div>
+    </div>
+
+    <div class="person">
+      <div class="person-name">Juan Carlos L. Syquia</div>
+      <div class="person-title">CFO (effective Jan 2026)</div>
+      <div class="person-note">30+ years in corporate banking (BPI EVP). New in role — joined as Deputy CFO May 2025, full CFO Jan 2026. Actively building his financial transformation mandate. <em>The highest-priority contact for ERP.</em></div>
+      <div class="erp-flag">PRIMARY ERP BUYER</div>
+    </div>
+
+    <div class="person">
+      <div class="person-name">Catherine H. Ang</div>
+      <div class="person-title">Acting Controller (Mar 2026)</div>
+      <div class="person-note">Appointed acting controller after de Asis departed unexpectedly March 9, 2026 (was controller since 2012). Also Chief Audit Executive. This double-hat role signals financial reporting under strain — a live pain point.</div>
+      <div class="erp-flag new">NEW — WATCH</div>
+    </div>
+
+    <div class="person">
+      <div class="person-name">Francisco Romero Milán</div>
+      <div class="person-title">CHRO, Head of Corporate Resources</div>
+      <div class="person-note">Oversees HR for 64,000+ employees. Current HCM stack is Ramco (2014 vintage, 10+ years old). Milán joined 2023 with transformation mandate. Key contact for HCM/workforce modules.</div>
+      <div class="erp-flag">HCM BUYER</div>
+    </div>
+
+    <div class="person">
+      <div class="person-name">Jaime Augusto Zobel de Ayala</div>
+      <div class="person-title">Chairman</div>
+      <div class="person-note">Chairs Globe, BPI, Ayala Land, ACEN simultaneously. Sets group digital governance standards. Not an operational buyer but sets group IT mandates. Publicly referenced macro headwinds at Apr 2026 ASM.</div>
+    </div>
+  </div>
+
+  <!-- NEWS -->
+  <div class="panel news">
+    <div class="panel-label"><span></span>Recent Developments</div>
+
+    <div class="news-item">
+      <div class="news-date">APR 24, 2026 — ASM</div>
+      <div class="news-headline">CAPEX Cut from ₱230B to ~₱180B; "Resiliency Over Growth" Declared</div>
+      <div class="news-body">At the Annual Stockholders Meeting, CEO Consing announced the group is recalibrating 2026 CAPEX downward by ~22%, citing Middle East conflict and energy market volatility. Focus explicitly shifts to cash flow and earnings discipline. 2026 core net income target: ₱65B. This operational efficiency pivot is your opening — the group needs systems that do more with less.</div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-date">MAR 9, 2026</div>
+      <div class="news-headline">Finance Controller Departs After 12 Years; Acting Controller Appointed</div>
+      <div class="news-body">Long-serving Controller Ma. Luz de Asis stepped down unexpectedly. Chief Audit Executive Catherine Ang was appointed acting controller, while a senior internal audit manager took over as acting CAE. Three finance leadership changes in under 90 days (CFO + Controller + CAE) signals significant financial function disruption — the strongest possible trigger for ERP evaluation.</div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-date">JAN 2026</div>
+      <div class="news-headline">Syquia Takes Full CFO Role; Ayala Land's 5 Execs Retire in Group-Wide Reset</div>
+      <div class="news-body">Juan Carlos Syquia officially assumed the CFO role. Simultaneously, Ayala Land saw five senior executives retire, including its longtime CFO Augusto Bengzon (21 years). Eduardo Quimpo named new ALI CFO. The group is in a broad leadership refresh cycle — new buyers, new mandates, new vendor evaluation windows across multiple subsidiaries.</div>
+    </div>
+  </div>
+
+  <!-- BUY SIGNALS -->
+  <div class="panel signals">
+    <div class="panel-label"><span></span>Why They Might Buy</div>
+
+    <div class="signal-item">
+      <div class="signal-icon">1</div>
+      <div class="signal-text">
+        <strong>Triple finance leadership change in 90 days</strong>
+        <span>New CFO (Jan 2026) + Controller departure (Mar 2026) + acting CAE in new dual role. This degree of finance function disruption almost always triggers a systems review. New CFO Syquia will want his own financial visibility infrastructure.</span>
+      </div>
+    </div>
+    <div class="signal-item">
+      <div class="signal-icon">2</div>
+      <div class="signal-text">
+        <strong>"Efficiency over growth" mandate — needs systems to deliver it</strong>
+        <span>CEO's Apr 2026 directive to prioritise cash flow and balance sheet over CAPEX expansion requires real-time multi-entity reporting. Disconnected subsidiary financials make this hard. ERP consolidation is the enabler.</span>
+      </div>
+    </div>
+    <div class="signal-item">
+      <div class="signal-icon">3</div>
+      <div class="signal-text">
+        <strong>12+ subsidiaries, no unified financial view</strong>
+        <span>BPI, Globe, Ayala Land, ACEN, IMI, ACMobility, AC Health — each with its own P&L. Consolidating group financials is a known pain point at this scale. Multi-entity ERP is the natural solution.</span>
+      </div>
+    </div>
+    <div class="signal-item">
+      <div class="signal-icon">4</div>
+      <div class="signal-text">
+        <strong>Aging HCM stack (Ramco, 2014)</strong>
+        <span>10-year-old HR system managing 64,000 employees across banking, healthcare, telco, real estate. CHRO Milán (joined 2023) has a clear transformation mandate. A modern HCM module is overdue.</span>
+      </div>
+    </div>
+    <div class="signal-item">
+      <div class="signal-icon">5</div>
+      <div class="signal-text">
+        <strong>Mitsubishi JV signals enterprise-grade digital readiness</strong>
+        <span>The ₱19B Mitsubishi deal for 50% of AC Ventures (GCash) brings a global partner with high enterprise system standards. Internal IT maturity demands will rise to match international JV governance requirements.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TALK TO -->
+  <div class="panel talkto">
+    <div class="panel-label"><span></span>Who To Talk To — Purchase Decision Influencers</div>
+    <div class="contacts-row">
+
+      <div class="contact-card">
+        <div class="contact-role-badge">🎯 Primary Economic Buyer</div>
+        <div class="contact-name">Juan Carlos L. Syquia</div>
+        <div class="contact-title">CFO, Ayala Corporation (Jan 2026)</div>
+        <div class="contact-why">
+          <strong>Why target him:</strong> New CFO, 4 months in role. Came from BPI (corporate banking), not a systems incumbent. Will be defining his financial leadership agenda. The Controller vacancy means he is directly exposed to financial reporting gaps. This is the optimal window — before he inherits and defends the status quo.
+        </div>
+        <a class="linkedin-link" href="https://www.linkedin.com/search/results/people/?keywords=Juan+Carlos+Syquia+Ayala" target="_blank">↗ Search on LinkedIn</a>
+      </div>
+
+      <div class="contact-card">
+        <div class="contact-role-badge">🔧 Technical Champion</div>
+        <div class="contact-name">Catherine H. Ang</div>
+        <div class="contact-title">Acting Controller + Chief Audit Executive</div>
+        <div class="contact-why">
+          <strong>Why target her:</strong> Currently holding two critical finance roles simultaneously — acting controller and CAE — after the unexpected departure of the 12-year controller. This overload is a live, acute pain point. She is the person most likely to advocate internally for better financial systems. Engage on financial close, reporting, and audit trail capabilities.
+        </div>
+        <a class="linkedin-link" href="https://www.linkedin.com/search/results/people/?keywords=Catherine+Ang+Ayala+Corporation" target="_blank">↗ Search on LinkedIn</a>
+      </div>
+
+      <div class="contact-card">
+        <div class="contact-role-badge">👥 HCM Module Sponsor</div>
+        <div class="contact-name">Francisco Romero Milán</div>
+        <div class="contact-title">CHRO, Head of Corporate Resources</div>
+        <div class="contact-why">
+          <strong>Why target him:</strong> Manages HR for 64,000+ employees on a 10-year-old Ramco HCM system. Joined in 2023 with a transformation mandate — three years in, he has had time to identify the gaps and build a business case. If your ERP includes workforce/HCM modules, he is the decision-maker.
+        </div>
+        <a class="linkedin-link" href="https://www.linkedin.com/search/results/people/?keywords=Francisco+Romero+Milan+Ayala" target="_blank">↗ Search on LinkedIn</a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-left">
+    <span class="verified-dot"></span>Live-verified Apr 28, 2026 · Sources: Ayala ASM media briefing (Apr 24), BusinessWorld, InsiderPH, Manila Bulletin, GMA News, Ayala IR filings<br>
+    Current ERP Stack (est.): SAP S/4 HANA (ERP, 2017) · Ramco (HCM, 2014) · Verify CIO/CTO contact before meeting · Financial data in PHP unless noted
+  </div>
+  <div class="footer-right">Enterprise Sales Intelligence</div>
+</div>
+
+</body>
+</html>
